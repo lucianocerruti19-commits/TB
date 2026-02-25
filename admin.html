@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+
+<img src="icon.png" class="logo">
+<div class="titulo">Panel Admin</div>
+<hr>
+
+<div class="card">
+  <input id="seccion" placeholder="Nueva sección">
+  <button class="boton-dorado" onclick="crearSeccion()">Agregar Sección</button>
+</div>
+
+<div class="card">
+  <input id="nombre" placeholder="Nombre producto">
+  <input id="precio" placeholder="Precio">
+  <input id="seccionProd" placeholder="Sección">
+  <button class="boton-dorado" onclick="crearProducto()">Agregar Producto</button>
+</div>
+
+<div id="lista" class="card"></div>
+
+</div>
+
+<script>
+let productos = JSON.parse(localStorage.getItem("productos")) || [];
+
+function crearSeccion(){
+  alert("Sección creada (solo organizativa)");
+}
+
+function crearProducto(){
+  const nombre = nombreInput = document.getElementById("nombre").value;
+  const precio = parseFloat(document.getElementById("precio").value);
+  const seccion = document.getElementById("seccionProd").value;
+
+  if(!nombre || !precio || !seccion) return alert("Completar todo");
+
+  productos.push({nombre, precio, seccion});
+  localStorage.setItem("productos", JSON.stringify(productos));
+  mostrar();
+}
+
+function mostrar(){
+  const div = document.getElementById("lista");
+  div.innerHTML = "<h3>Productos</h3>";
+  productos.forEach((p,i)=>{
+    div.innerHTML += `
+      <p>${p.nombre} - $${p.precio} (${p.seccion})
+      <button onclick="eliminar(${i})">X</button></p>`;
+  });
+}
+
+function eliminar(i){
+  productos.splice(i,1);
+  localStorage.setItem("productos", JSON.stringify(productos));
+  mostrar();
+}
+
+mostrar();
+</script>
+</body>
+</html>

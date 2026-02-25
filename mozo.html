@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mozo</title>
+<style>
+body{background:#000;color:#D4AF37;font-family:Arial;padding:20px}
+.card{background:#111;padding:15px;border-radius:15px;margin:10px 0}
+button{background:#D4AF37;color:black;border:none;padding:10px;border-radius:10px}
+</style>
+</head>
+<body>
+
+<h1>Mozo</h1>
+<div id="mesas"></div>
+
+<script type="module">
+import { db } from "./firebase.js";
+import { collection,onSnapshot,doc,updateDoc }
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const div=document.getElementById("mesas");
+
+onSnapshot(collection(db,"pedidos"),snap=>{
+div.innerHTML="";
+snap.forEach(d=>{
+const data=d.data();
+if(data.estado==="listo"){
+div.innerHTML+=`
+<div class="card">
+<h2>${data.mesa}</h2>
+<p>Total: $${data.total}</p>
+<button onclick="cobrar('${d.id}')">Cobrar</button>
+</div>`;
+}
+});
+});
+
+window.cobrar=async(id)=>{
+await updateDoc(doc(db,"pedidos",id),{estado:"cobrado"});
+}
+</script>
+
+</body>
+</html>
